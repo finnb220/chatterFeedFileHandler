@@ -1,0 +1,50 @@
+<apex:page controller="FeedFileController">
+	<script>
+	    // http://www.redargyle.com/blog/embedding-chatter-in-custom-visualforce-pages/
+        // Capture all clicks on <a> elements and change the URL for the whole window
+        // Some <a> elements are used for JavaScript function calls, so only capture
+        // them when the URL starts with the / character.
+        jQuery(document).ready(function($) {
+            $('#chatter-container').contents().on('click', 'a', function(e) {
+                if($(this).attr('href').charAt(0) == '/') {
+                    e.preventDefault();
+                    top.window.location.href = $(this).attr('href');
+                }
+            });
+        });
+
+    </script>
+    <apex:pageBlock>
+		<apex:form>
+		    <apex:pageMessages/>
+	    	<table>
+		    	<tr numcolumns="1">
+			    	<td>
+			    		<apex:commandButton action="{!gotoFeedPage}" value="Attach File"/>	
+			   		</td>
+			   	</tr>
+			   	<tr>&nbsp;</tr>
+			   	<tr>&nbsp;</tr>
+			</table>
+			<apex:pageBlockTable value="{!files}" var="file" id="idFilesTable" styleClass="tableClass">
+				<apex:column>
+					<apex:facet name="header">View File</apex:facet>
+					<apex:outputLink value="/{!file.RelatedRecordId}">
+						{!file.Title}
+					</apex:outputLink>
+				</apex:column>
+				<apex:column>
+					<apex:facet name="header">Created Date</apex:facet>
+					<apex:outputField value="{!file.CreatedDate}"/>
+				</apex:column>
+				<apex:column>
+					<apex:facet name="header">Created By</apex:facet>
+		           	<apex:outputField value="{!file.CreatedById}"/>
+		       	</apex:column>
+			</apex:pageBlockTable>
+			<apex:outputPanel rendered="{!IF(files.size > 0, false, true)}">
+				<h4>There are no Files with Topic {!topic} for this object.</h4>
+			</apex:outputPanel>
+		</apex:form>
+	</apex:pageBlock>
+</apex:page>

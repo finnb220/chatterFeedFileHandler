@@ -1,0 +1,29 @@
+<apex:page standardStylesheets="true" controller="FeedFileController">
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+   
+    <script>
+	    // http://www.redargyle.com/blog/embedding-chatter-in-custom-visualforce-pages/
+        // Capture all clicks on <a> elements and change the URL for the whole window
+        // Some <a> elements are used for JavaScript function calls, so only capture
+        // them when the URL starts with the / character.
+        jQuery(document).ready(function($) {
+            $('#chatter-container').contents().on('click', 'a', function(e) {
+                if($(this).attr('href').charAt(0) == '/') {
+                    e.preventDefault();
+                    top.window.location.href = $(this).attr('href');
+                }
+            });
+        });
+
+    </script>
+    <apex:pageMessages/>
+    <apex:form>
+        <apex:actionFunction name="setTopic" action="{!setTopic}"/>
+        <apex:commandButton value="Cancel" action="{!goToObjectHome}"/>
+    </apex:form>
+    <!-- Displays standard SF chatter feed component to allow user to upload a file    -->
+    <!-- We capture the complete event and set the Topic on the newly created FeedItem -->
+    <div id="chatter-container">
+        <chatter:feed entityId="{!ourId}" onComplete="setTopic();" />
+    </div>
+</apex:page>
